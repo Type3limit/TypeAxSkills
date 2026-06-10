@@ -9,32 +9,33 @@ description: >-
   used concepts and stale narrative patterns, writes a non-formulaic story first,
   reveals and explains the concept after the turn, humanizes the prose with
   write-like-human checks, creates a cover image with Codex built-in image
-  generation, and saves the Markdown article plus cover under G:\fable.
+  generation, and saves each article plus cover in its own subfolder under G:\fable.
 ---
 
 # Concept Fable Skill
 
-写一篇有阅读欲望的中文故事稿，把研究生水平的概念藏在人物选择里。先让故事自己成立，再让概念在结尾补上一刀。默认生成封面图，并把成稿保存到 `G:\fable`。
+写一篇有阅读欲望的中文故事稿，把研究生水平的概念藏在人物选择里。先让故事自己成立，再让概念在结尾补上一刀。默认生成封面图，并把每篇文章和封面保存到 `G:\fable` 下的独立子文件夹里。
 
 ## 默认假设
 
 - 用户指定概念时，用指定概念；没指定时，挑一个历史中没用过、机制能被故事演出来的概念。
 - 默认写中文，面向中文长文读者；可以借鉴知乎盐选的“故事带知识”阅读感，但不要冒充平台内容。
-- 默认输出 Markdown 到 `G:\fable`，封面图同目录保存为 `-cover.png`。
+- 默认每篇输出到独立文件夹：`G:\fable\yyyyMMdd-HHmm-<安全化标题>\article.md` 和 `cover.png`。
 - 标题、封面提示词和故事正文在揭晓前都不能出现概念名。
 - 文章不要像模板填空。连续两篇不能使用相同叙事容器、时代背景、核心道具或揭晓句式。
 
 ## 工作流
 
-1. 读取历史：创建 `G:\fable`（如不存在），读取 `G:\fable\concept-history.md`，并扫描 `G:\fable\*.md` 中的 `## 原来它讲的是：...`。
+1. 读取历史：创建 `G:\fable`（如不存在），读取 `G:\fable\concept-history.md`，并递归扫描 `G:\fable\**\*.md` 中的 `## 原来它讲的是：...` 或同等揭晓句。
 2. 避开重复：建立已用概念集合，也记录最近文章的叙事容器、场景和核心道具。
 3. 选概念：选择一个未用过、能用因果链演出来的概念。如果用户指定的概念已用过，提醒后换相近但未用过的概念；除非用户明确要求重复。
 4. 选叙事容器：先决定这篇文章长什么样，再写内容。不要默认古镇寓言。
 5. 写故事：让人物先有自己的麻烦、私心、误判和难堪。概念从他们的选择里长出来。
 6. 揭晓概念：揭晓必须自然，像读者忽然对上，而不是老师开始上课。
 7. 改稿：使用 `write-like-human` 的检查思路重写一轮，删除 AI 腔、金句腔和固定结构。
-8. 生成封面：用 Codex 内置 `image_gen` 根据故事核心画面生成封面，保存到 `G:\fable`。
-9. 保存和登记：写入 Markdown、封面、历史记录，并检查三者都存在且非空。
+8. 创建文章文件夹：`G:\fable\yyyyMMdd-HHmm-<安全化标题>\`。
+9. 生成封面：用 Codex 内置 `image_gen` 根据故事核心画面生成封面，保存为该文件夹里的 `cover.png`。
+10. 保存和登记：写入 `article.md`、`cover.png`、历史记录，并检查三者都存在且非空。
 
 ## 概念和写法去重
 
@@ -43,7 +44,7 @@ description: >-
 概念集合：
 
 - 读取 `G:\fable\concept-history.md` 中的概念条目。
-- 扫描 `G:\fable\*.md`，提取 `## 原来它讲的是：<概念>`。
+- 递归扫描 `G:\fable\**\*.md`，提取 `## 原来它讲的是：<概念>` 或正文中的等价揭晓句。
 - 中英文名视为同一个概念，例如 `辛普森悖论` 和 `Simpson's Paradox` 不能分别再用一次。
 
 写法集合：
@@ -55,7 +56,7 @@ description: >-
 生成成功后，追加一行：
 
 ```text
-- yyyy-MM-dd HH:mm | <中文概念名> (<English Name>) | <标题> | form=<叙事容器> | setting=<场景> | prop=<核心道具> | <文章文件名>
+- yyyy-MM-dd HH:mm | <中文概念名> (<English Name>) | <标题> | form=<叙事容器> | setting=<场景> | prop=<核心道具> | <文章文件夹>\article.md
 ```
 
 旧历史记录没有这些字段也能继续使用；有字段时优先参考字段。
@@ -164,7 +165,7 @@ description: >-
 
 - 使用 Codex 内置 `image_gen` 生图能力，遵循 `imagegen` skill 的默认 built-in tool mode。
 - 不要要求用户设置 `OPENAI_API_KEY`；缺少 `OPENAI_API_KEY` 不是跳过封面的理由。
-- 生成后把最终图片保存或复制到 `G:\fable\<同前缀>-cover.png`。不要让 Markdown 引用只指向 `$CODEX_HOME/generated_images/...`。
+- 生成后把最终图片保存或复制到当前文章文件夹的 `cover.png`。不要让 Markdown 引用只指向 `$CODEX_HOME/generated_images/...`。
 - 建议横版；如果用户指定平台比例，按用户指定。
 - 封面不放概念名、不放解释文字、不放水印、不放平台 Logo。
 - 画面只抓一个最有张力的故事瞬间。
@@ -191,7 +192,7 @@ Avoid: generic stock-photo look, overdramatic fantasy, cyberpunk, cluttered typo
 ```markdown
 # <标题>
 
-![封面](./<同前缀>-cover.png)
+![封面](./cover.png)
 
 > <一句有钩子的引子；不透露概念名>
 
@@ -214,12 +215,14 @@ Avoid: generic stock-photo look, overdramatic fantasy, cyberpunk, cluttered typo
 ## 保存规则
 
 - 输出目录：`G:\fable`
-- 文章文件名：`yyyyMMdd-HHmm-<安全化标题>.md`
-- 封面文件名：`yyyyMMdd-HHmm-<安全化标题>-cover.png`
+- 每篇文章目录：`G:\fable\yyyyMMdd-HHmm-<安全化标题>\`
+- 文章文件名：`article.md`
+- 封面文件名：`cover.png`
 - 历史文件：`concept-history.md`
 - 安全化标题：去掉 Windows 文件名非法字符 `\ / : * ? " < > |`，空白压缩为一个空格。
+- 根目录不要散落文章和封面。除 `concept-history.md` 这类索引文件外，新生成的文章资产都放进对应文章目录。
 - 写入后检查文章、封面和历史文件都存在且长度大于 0。
-- Markdown 中的封面引用使用相对路径：`![封面](./<同前缀>-cover.png)`。
+- Markdown 中的封面引用使用相对路径：`![封面](./cover.png)`。
 - 最终回复只给标题、文章路径、封面路径、概念和一句说明。
 
 ## 成功标准
