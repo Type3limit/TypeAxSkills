@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Dev Rule"
+  short_description: "为 AI 辅助开发建立可执行的质量门禁、评审机制与维护责任"
+  default_prompt: "使用 $ai-dev-rule 对当前项目做只读审计，列出现有保护、按严重度排序的缺口和最小改进建议。"
