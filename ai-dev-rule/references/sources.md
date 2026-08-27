@@ -16,5 +16,6 @@
 - [Google Small CLs](https://google.github.io/eng-practices/review/developer/small-cls.html)：一个变更聚焦一件事，把相关测试放在同一变更中，并分离重构与行为修改。
 - [OpenSSF Scorecard](https://scorecard.dev/)：将分支保护、代码评审、持续验证、模糊测试、静态分析、依赖和发布安全变成可检查项目。
 - [SLSA Build Provenance](https://slsa.dev/spec/v1.2/build-provenance)：记录制品由何种源码、依赖和构建环境产生，以支持验证和追溯。
+- [smell-check（原 pragmatic-clean-code-reviewer）](https://github.com/Zhen-Bo/smell-check)：以明确范围、证据类型、例外排除、降级说明和部分结果提高 AI 静态审计的可复现性；这里借鉴其审计协议，不移植固定异味规则或阈值。
 
-上述链接最后核验于 2026-08-26。若结论依赖当前政策或工具能力，应重新访问官方来源；无法访问时标注日期和未核实范围，不要把历史资料表述为当前事实。
+上述链接最后核验于 2026-08-27。若结论依赖当前政策或工具能力，应重新访问官方来源；无法访问时标注日期和未核实范围，不要把历史资料表述为当前事实。
